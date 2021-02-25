@@ -34,6 +34,31 @@ interface Problem {
     testcaseNames: string[]
 }
 
+function sanitizeDifficulty(rawDifficulty: string | undefined): string | null {
+    if (!rawDifficulty) return null
+    switch (rawDifficulty) {
+        case "gray":
+        case "grey":
+            return "gray"
+        case "brown":
+            return "brown"
+        case "green":
+            return "green"
+        case "cyan": case "aqua":
+            return "cyan"
+        case "blue":
+            return "blue"
+        case "yellow":
+            return "yellow"
+        case "orange":
+            return "orange"
+        case "red":
+            return "red"
+        default:
+            return null
+    }
+}
+
 async function parseZip(data: Buffer): Promise<Problem> {
     const zip = await JSZip.loadAsync(data);
     const configFile = zip.file('problem.json');
@@ -70,7 +95,7 @@ async function parseZip(data: Buffer): Promise<Problem> {
         title,
         statement,
         editorial,
-        difficulty: difficulty || null,
+        difficulty: sanitizeDifficulty(difficulty),
         testcases,
         testcasesDir,
         testcaseNames,
